@@ -7,7 +7,7 @@ win = gui("Chat client ...")
 
 # local host IP '127.0.0.1'
 host = 'localhost'
-port = 8088
+port = 12346
 encoding = 'utf-8'
 
 buffer_size = 1024
@@ -54,16 +54,19 @@ def login_press(btn):
     if btn == "Cancel":
         win.stop()
     else:
-        clientName = win.getEntry("clientName").encode()
-        s.send(clientName)
+
+        # clientName = win.getEntry("clientName").encode()
+        # s.send(clientName)
         win.hideSubWindow("Login")
         win.show()
 
 
 def Main():
 
-    recv_thread = Thread(target=receive_from_server, args=(s,))
-    recv_thread.start()
+
+    # recv_thread = Thread(target=receive_from_server, args=(s,))
+    # recv_thread.start()
+
 
     # Create login windows to get the client name
     win.startSubWindow("Login", modal=True)
@@ -96,10 +99,13 @@ def Main():
     win.setLabelHeight("Response", 20)
     win.setLabel("Response", "Waiting for messages")
 
-    win.addLabel("dataFromClient", "Message", 2, 0)
-    win.addEntry("clientMsg", 2, 1, 2, 2)
+    win.addLabel("selectClient", "Select delivery  client/s:", 2, 0)
+    win.addTickOptionBox("Clients List", [], 2, 1, 2, 2)
 
-    win.addButton("Send", press, 2, 3, 4)
+    win.addLabel("dataFromClient", "Message", 4, 0)
+    win.addEntry("clientMsg", 4, 1, 2, 2)
+
+    win.addButton("Send", press, 4, 3, 4)
     win.setFocus("clientMsg")
 
 
@@ -118,11 +124,11 @@ def Main():
     #     else:
     #         s.send(message.encode(encoding))
 
+
+    #recv_thread.join()
+
     # close the connection
     s.close()
-
-    recv_thread.join()
-
 
 if __name__ == '__main__':
     Main()
