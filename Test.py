@@ -1,3 +1,4 @@
 import unittest
 
-class TestMyFile()
+class TestMyFile(unittest.TestCase):
+
