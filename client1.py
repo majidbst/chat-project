@@ -7,7 +7,7 @@ win = gui("Chat client ...")
 
 # local host IP '127.0.0.1'
 host = 'localhost'
-port = 12346
+port = 12360
 encoding = 'utf-8'
 
 buffer_size = 1024
@@ -41,7 +41,7 @@ def receive_from_server(conn):
 
     # conn.close()
 
-# Set focus method
+"""Set focus method"""
 def enter_press(btn):
     win.setEntry("clientMsg", '')
     win.setFocus("clientMsg")
@@ -82,7 +82,7 @@ def Main():
     recv_thread.start()
 
 
-    # Create login windows to get the client name
+    """Create login windows to get the client name"""
     win.startSubWindow("Login", modal=True)
     win.setSize(300, 150)
     win.setBg("gray")
@@ -93,7 +93,7 @@ def Main():
     win.setFocus("clientName")
     win.stopSubWindow()
 
-    # add labels to show server and client addresses
+    """add labels to show server and client addresses"""
     win.addLabel("clientName", "Client Name: ", 0, 0)
     win.setLabelBg("clientName", "Azure")
     win.getLabelWidget("clientName").config(font="Verdana 12 overstrike")
