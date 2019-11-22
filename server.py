@@ -89,7 +89,7 @@ def broadcast(data):
 """Remove connection from server's connection list"""
 def remove_connection(connection):
     connection_list.remove(connection)
-    for login, address in login_list.items():
+    for login, address in login_list:
         if address == connection:
             del login_list[login]
             break
