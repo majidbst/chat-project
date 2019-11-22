@@ -93,7 +93,7 @@ def Main():
     win.setFocus("clientName")
     win.stopSubWindow()
 
-    """add labels to show server and client addresses"""
+    """add labels to show client name"""
     win.addLabel("clientName", "Client Name: ", 0, 0)
     win.setLabelBg("clientName", "Azure")
     win.getLabelWidget("clientName").config(font="Verdana 12 overstrike")
@@ -114,7 +114,6 @@ def Main():
     win.setLabelHeight("Response", 20)
     win.setLabel("Response", "Waiting for messages")
     
-    
     win.addScrolledTextArea('Response', 1, 0, 4)
     win.setTextAreaRelief("Response", "sunken")
     win.setTextArea("Response", "Connected to chat server.", end=True)
@@ -127,7 +126,6 @@ def Main():
 
     win.addListBox("Response", [], 1, 2)
     """
-
 
     # win.registerEvent()
     # win.addListBox()
