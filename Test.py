@@ -5,3 +5,7 @@ class TestMyFile(unittest.TestCase):
 
 
 
+unittest.main()
+
+
+
