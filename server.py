@@ -7,6 +7,7 @@ import time
 clients = {}           # dictionary of all clients by conn and addr
 connection_list = []   # list of all sockets which server listening and receiving data to/from them
 login_list = []
+receive_messages_thread = []
 
 #local host IP '127.0.0.1
 host = 'localhost'
@@ -162,8 +163,8 @@ def Main():
 
             conn, addr = s.accept()
             print("Connected to Conn: ", conn)
-            print('Connected to: ', addr[0], ':', addr[1])
-            #print("%s:%s socket has connected to the client." % addr)
+            #print('Connected to: ', addr[0], ':', addr[1])
+            print("%s:%s socket has connected to the client." % addr)
             #conn.send(b"Welcome to chat!")
 
             """
@@ -184,23 +185,25 @@ def Main():
                 print("New connection was added to the connection_list.")
 
                 """this thread do just broadcasting"""
-                receive_messages_thread = Thread(target=receive, args=(conn,))
+                client_thread = Thread(target=receive, args=(conn,))
+                receive_messages_thread.append(client_thread)
 
                 """this thread handle all communications as one-to-one/one-to-many, but but final yet"""
                 # receive_messages_thread = Thread(target=handle_client, args=(conn,), daemon=True)
-                receive_messages_thread.start()
+                #receive_messages_thread.start()
+                client_thread.start()
 
     #receive_messages_thread.join()
 
         except socket.error:
-            pass
+            print("Server socket error.")
         finally:
-            pass
             """Release a lock, decrementing the recursion level."""
             _recv_lock.release()
             time.sleep(0.050)
 
-        #receive_messages_thread.join()
+    #for thrd in receive_messages_thread:
+        #thrd.join()
     s.close()
 
 if __name__ == '__main__':
