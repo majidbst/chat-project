@@ -7,7 +7,7 @@ win = gui("Chat client ...")
 
 # local host IP '127.0.0.1'
 host = 'localhost'
-port = 12360
+port = 12390
 encoding = 'utf-8'
 
 buffer_size = 1024
@@ -78,10 +78,6 @@ def login_press(btn):
 
 def Main():
 
-    recv_thread = Thread(target=receive_from_server, args=(s,))
-    recv_thread.start()
-
-
     # Create login windows to get the client name
     win.startSubWindow("Login", modal=True)
     win.setSize(300, 150)
@@ -148,6 +144,9 @@ def Main():
 
 
     win.enableEnter(enter_press)
+
+    recv_thread = Thread(target=receive_from_server, args=(s,))
+    recv_thread.start()
 
     #win.go()
     # Client app starts with the login window as a sub-window

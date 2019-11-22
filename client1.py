@@ -7,7 +7,7 @@ win = gui("Chat client ...")
 
 # local host IP '127.0.0.1'
 host = 'localhost'
-port = 12360
+port = 12390
 encoding = 'utf-8'
 
 buffer_size = 1024
@@ -30,14 +30,14 @@ def receive_from_server(conn):
             if len(data) < 1:
                 print("Close the connection to server...")
                 break
-            message_string = data.decode(encoding)
-            print('\nReceived from the server:', message_string)
-            #print('\nReceived from the server:', (data.decode(encoding)))
-            #win.setLabel("Response", message_string)
-            #win.setTextArea("Response", message_string, end=False)
-            items_list.append(message_string)
-            win.updateListBox("Response", items_list, select=False)
-            #win.addListItem("Response", message_string, select=True)
+            else:
+                message_string = data.decode(encoding)
+                print('\nReceived from the server:', message_string)
+                #win.setLabel("Response", message_string)
+                #win.setTextArea("Response", message_string, end=False)
+                items_list.append(message_string)
+                win.updateListBox("Response", items_list, select=False)
+                #win.addListItem("Response", message_string, select=True)
 
     # conn.close()
 
@@ -69,6 +69,8 @@ def login_press(btn):
 
         #clientName = (win.getEntry("clientName") + '#').encode()
         clientName = win.getEntry("clientName").encode()
+       # login_message = ('login' + ">>" + clientName).encode()
+        #s.send(login_message)
         s.send(clientName)
 
         win.hideSubWindow("Login")
@@ -78,9 +80,8 @@ def login_press(btn):
 
 def Main():
 
-    recv_thread = Thread(target=receive_from_server, args=(s,))
-    recv_thread.start()
-
+    # recv_thread = Thread(target=receive_from_server, args=(s,))
+    # recv_thread.start()
 
     """Create login windows to get the client name"""
     win.startSubWindow("Login", modal=True)
@@ -146,6 +147,9 @@ def Main():
 
 
     win.enableEnter(enter_press)
+
+    recv_thread = Thread(target=receive_from_server, args=(s,))
+    recv_thread.start()
 
     #win.go()
     # Client app starts with the login window as a sub-window

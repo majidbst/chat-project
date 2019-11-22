@@ -11,7 +11,7 @@ receive_messages_thread = []
 
 #local host IP '127.0.0.1
 host = 'localhost'
-port = 12360
+port = 12390
 encoding = 'utf-8'
 
 buffer_size = 1024
@@ -82,7 +82,6 @@ def broadcast(data):
             print("Sending data to: ", conn)
         except socket.error:
             print("No client")
-
         finally:
             _send_lock.release()
 
@@ -94,7 +93,6 @@ def remove_connection(connection):
             del login_list[login]
             break
     update_login_list()
-
 
 """receive function"""
 def receive(conn):
@@ -108,6 +106,8 @@ def receive(conn):
             print("Client quit")
             conn.send(data)
             break
+
+        #analys_data(data, conn)
 
         """send message to all clients"""
         broadcast(data)
@@ -129,6 +129,7 @@ def analys_data(data, conn):
     if data:
         msg = data.decode(encoding)
         print("Message: ", msg)
+
 
 
 """Update list of online clients"""
@@ -165,7 +166,7 @@ def Main():
             print("Connected to Conn: ", conn)
             #print('Connected to: ', addr[0], ':', addr[1])
             print("%s:%s socket has connected to the client." % addr)
-            #conn.send(b"Welcome to chat!")
+            conn.send(b"Welcome to chat!")
 
             """
             # Set blocking or non-blocking mode of the socket: if flag is false, the socket is set to non-blocking, else to blocking mode.
@@ -202,8 +203,8 @@ def Main():
             _recv_lock.release()
             time.sleep(0.050)
 
-    #for thrd in receive_messages_thread:
-        #thrd.join()
+    for thrd in receive_messages_thread:
+        thrd.join()
     s.close()
 
 if __name__ == '__main__':
