@@ -5,7 +5,6 @@ from threading import Thread
 
 win = gui("Chat client ...")
 
-# local host IP '127.0.0.1'
 host = 'localhost'
 port = 12390
 encoding = 'utf-8'
@@ -67,7 +66,6 @@ def login_press(btn):
         win.stop()
     else:
 
-        #clientName = (win.getEntry("clientName") + '#').encode()
         clientName = win.getEntry("clientName").encode()
        # login_message = ('login' + ">>" + clientName).encode()
         #s.send(login_message)
@@ -79,9 +77,6 @@ def login_press(btn):
         win.clearListBox("Response")
 
 def Main():
-
-    # recv_thread = Thread(target=receive_from_server, args=(s,))
-    # recv_thread.start()
 
     """Create login windows to get the client name"""
     win.startSubWindow("Login", modal=True)
@@ -151,7 +146,6 @@ def Main():
     recv_thread = Thread(target=receive_from_server, args=(s,))
     recv_thread.start()
 
-    #win.go()
     # Client app starts with the login window as a sub-window
     win.go(startWindow="Login")
 
@@ -162,7 +156,6 @@ def Main():
     #         break
     #     else:
     #         s.send(message.encode(encoding))
-
 
     recv_thread.join()
 

@@ -9,7 +9,6 @@ connection_list = []   # list of all sockets which server listening and receivin
 login_list = []
 receive_messages_thread = []
 
-#local host IP '127.0.0.1
 host = 'localhost'
 port = 12390
 encoding = 'utf-8'
@@ -23,12 +22,6 @@ _recv_lock = threading.RLock()
 _send_lock = threading.RLock()
 _accept_lock = threading.RLock()
 
-"""Semaphores to lock the receive, send and accept methods
-_recv_lock = threading.Condition()
-_send_lock = threading.Condition()
-_accept_lock = threading.Condition()
-"""
-
 def handle_client(conn):
     print('Receiving thread starting to get new messages from clients')
     print("Connection_list: ", connection_list)
@@ -36,16 +29,16 @@ def handle_client(conn):
         if len(connection_list) > 0:
             for conn in connection_list:
                 try:
-                    # Acquire a lock, blocking or non-blocking.
+                    """Acquire a lock, blocking or non-blocking."""
                     _recv_lock.acquire()
                     data = conn.recv(buffer_size)
                 except socket.error:
                     data = None
                 finally:
-                    # Release a lock, decrementing the recursion level.
+                    """Release a lock, decrementing the recursion level."""
                     _recv_lock.release()
 
-            # checking data according to message protocol, to indicate massage type and other features
+            """checking data according to message protocol, to indicate massage type and other features"""
             analys_data(data, conn)
 
 
@@ -130,8 +123,6 @@ def analys_data(data, conn):
         msg = data.decode(encoding)
         print("Message: ", msg)
 
-
-
 """Update list of online clients"""
 def update_client_list():
     print("This function not completed")
@@ -164,23 +155,13 @@ def Main():
 
             conn, addr = s.accept()
             print("Connected to Conn: ", conn)
-            #print('Connected to: ', addr[0], ':', addr[1])
             print("%s:%s socket has connected to the client." % addr)
             conn.send(b"Welcome to chat!")
 
-            """
-            # Set blocking or non-blocking mode of the socket: if flag is false, the socket is set to non-blocking, else to blocking mode.
-            # if flag is 0, the socket is set to non-blocking, else to blocking mode.
-            # Initially all sockets are in blocking mode.
-            # In non-blocking mode, if a recv() call doesn’t find any data,
-            # or if a send() call can’t immediately dispose of the data, an error exception is raised;
-            # in blocking mode, the calls block until they can proceed.
-            # s.setblocking(0) is equivalent to s.settimeout(0.0); s.setblocking(1) is equivalent to s.settimeout(None)."""
-
+            """Set blocking or non-blocking mode of the socket"""
             #conn.setblocking(False)
             if conn not in clients:
-                """Dictionary of client addresses with socket with conn as key and addr as value
-                addr is the new socket (IP:port) which server established to connected to client for ex.(127.0.0.1: 51234)"""
+                """Dictionary of client addresses with socket with conn as key and addr as value"""
                 clients[conn] = addr
                 #connection_list.append(conn)
                 print("New connection was added to the connection_list.")
@@ -193,8 +174,6 @@ def Main():
                 # receive_messages_thread = Thread(target=handle_client, args=(conn,), daemon=True)
                 #receive_messages_thread.start()
                 client_thread.start()
-
-    #receive_messages_thread.join()
 
         except socket.error:
             print("Server socket error.")
