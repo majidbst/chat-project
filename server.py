@@ -10,7 +10,7 @@ login_list = []
 receive_messages_thread = []
 
 host = 'localhost'
-port = 12390
+port = 12345
 encoding = 'utf-8'
 
 buffer_size = 1024
