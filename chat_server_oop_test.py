@@ -1,7 +1,31 @@
+import unittest
 from threading import Thread
 import threading
 
 from chat_server_oop import *
+
+
+"""--- Server test methods"""
+class SocketTest(unittest.TestCase):
+    def __init__(self):
+        self.ip = server_ip
+        self.port = server_port
+
+    def server_test(self):
+        chat_server = ChatServer(self.ip, self.port)
+        server_thread = threading.Thread(target=chat_server.listen_to_new_conn)
+        server_thread.start()
+
+        time.sleep(0.000001)
+
+        # This is our fake test client that is just going to attempt a connect and disconnect
+        fake_client = socket.socket()
+        fake_client.settimeout(1)
+        fake_client.connect((self.ip, self.port))
+        fake_client.close()
+
+        # Make sure server thread finishes
+        server_thread.join()
 
 
 # Simulates a socket instance
@@ -11,7 +35,7 @@ def xsocket(ip_proto, tcp_proto):
     return _stub
 
 
-class Socket:
+class socket:
     def __init__(self, ip_proto, tcp_proto):
         if ip_proto != AF_INET or tcp_proto != SOCK_STREAM:
             raise Exception("Socket initiated with wrong values")

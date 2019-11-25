@@ -33,6 +33,7 @@ class ClientTest(unittest.TestCase):
 
         # Test the clients basic connection and disconnection
         chat_client = client1.main()
+
         chat_client.connect(server_ip, server_port)
         chat_client.disconnect()
 

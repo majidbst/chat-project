@@ -14,7 +14,6 @@ connection_list = []   # list of all sockets which server listening and receivin
 login_list = []
 receive_messages_thread = []
 
-
 buffer_size = 1024
 queue = queue.Queue()
 
@@ -64,7 +63,6 @@ def send_to_one(destination, data):
 """Send message to a selected list of clients"""
 def send_to_selected_clients(destination_list, data):
     print("Send message to selected clients")
-
 
 """broadcast data to all clients"""
 def broadcast(data):
