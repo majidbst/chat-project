@@ -4,14 +4,16 @@ import threading
 import queue
 import time
 
+host = 'localhost'
+port = 12378
+encoding = 'utf-8'
+
+
 clients = {}           # dictionary of all clients by conn and addr
 connection_list = []   # list of all sockets which server listening and receiving data to/from them
 login_list = []
 receive_messages_thread = []
 
-host = 'localhost'
-port = 12345
-encoding = 'utf-8'
 
 buffer_size = 1024
 queue = queue.Queue()
@@ -165,6 +167,8 @@ def Main():
                 clients[conn] = addr
                 #connection_list.append(conn)
                 print("New connection was added to the connection_list.")
+                #broadcast(conn, "\n[%s:%s] entered the chat room\n" % addr)
+
 
                 """this thread do just broadcasting"""
                 client_thread = Thread(target=receive, args=(conn,))

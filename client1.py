@@ -5,7 +5,8 @@ from threading import Thread
 
 win = gui("Chat client ...")
 
-host = 'localhost'
+#host = 'localhost'
+host = socket.gethostbyname(socket.gethostname())
 port = 12345
 encoding = 'utf-8'
 
