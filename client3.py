@@ -7,7 +7,7 @@ win = gui("Chat client ...")
 
 # local host IP '127.0.0.1'
 host = 'localhost'
-port = 12360
+port = 12345
 encoding = 'utf-8'
 
 buffer_size = 1024
