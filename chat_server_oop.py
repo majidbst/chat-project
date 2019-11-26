@@ -4,9 +4,11 @@ import threading
 import time
 
 #host = 'localhost'
+#host = "127.0.0.1"
 host = socket.gethostbyname(socket.gethostname())
 port = 12345
 encoding = 'utf-8'
+
 
 class ChatServer(threading.Thread):
     def __init__(self, host, port):
@@ -61,7 +63,9 @@ class ChatServer(threading.Thread):
                 if conn not in self.clients:
                     self.clients[conn] = addr
                     print("New connection was added to the clients dict.")
-                    #self.broadcast("\n[%s:%s] entered to the chat room\n" % addr)
+                    #sendstr = "\n [%s:%s] entered to the chat room\n" % addr
+                    #sendstr = addr[0] + ' entered to the chat room'
+                    #self.broadcast(sendstr.encode())
 
                     client_thread = Thread(target=self.receive, args=(conn,), daemon=True)  # thread that receive data from client
                     self.receive_messages_thread.append(client_thread)  # collect receiving threads from every client
@@ -90,6 +94,18 @@ class ChatServer(threading.Thread):
 
                     self.analys_data(data, conn)
 
+    """analys receiving data and do the further action according to the message protocol"""
+    def analys_data(self, data, conn):
+        if data:
+            msg = data.decode(encoding)
+            msg = msg.split(":")
+            if msg[0] == 'Login':
+                self.broadcast(data)
+            elif msg[0] == 'msg':
+                if msg[2] == "all":
+                    msgstr = msg[1] + " > " + msg[3]
+                    self.broadcast(msgstr.encode())
+
 
     """broadcast data to all clients"""
     def broadcast(self, data):
@@ -103,14 +119,6 @@ class ChatServer(threading.Thread):
                 print("No client")
             finally:
                 self._send_lock.release()
-
-
-    """analys receiving data and do the further action according to the message protocol"""
-    def analys_data(self, data, conn):
-        if data:
-            #msg = data.decode(encoding)
-            self.broadcast(data)
-
 
     """Send message to a specified client"""
     def send_to_one_client(self, conn, data):

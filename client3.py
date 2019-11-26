@@ -1,12 +1,11 @@
 from appJar import gui
 import socket
-import threading
 from threading import Thread
 
-win = gui("Chat client ...")
+win = gui("Chat client ...", "450x320")
 
-# local host IP '127.0.0.1'
-host = 'localhost'
+#host = 'localhost'
+host = socket.gethostbyname(socket.gethostname())
 port = 12345
 encoding = 'utf-8'
 
@@ -30,18 +29,15 @@ def receive_from_server(conn):
             if len(data) < 1:
                 print("Close the connection to server...")
                 break
-            message_string = data.decode(encoding)
-            print('\nReceived from the server:', message_string)
-            #print('\nReceived from the server:', (data.decode(encoding)))
-            #win.setLabel("Response", message_string)
-            #win.setTextArea("Response", message_string, end=False)
-            items_list.append(message_string)
-            win.updateListBox("Response", items_list, select=False)
-            #win.addListItem("Response", message_string, select=True)
+            else:
+                message_string = data.decode(encoding)
+                print('\nReceived from the server:', message_string)
+                items_list.append(message_string)
+                win.updateListBox("Response", items_list, select=False)
 
     # conn.close()
 
-# Set focus method
+"""Set focus method"""
 def enter_press(btn):
     win.setEntry("clientMsg", '')
     win.setFocus("clientMsg")
@@ -49,17 +45,11 @@ def enter_press(btn):
 def press(btn):
     if btn == "Send":
         clientMessage = win.getEntry("clientMsg").encode()
-
-        #win.clearTextArea("Response")
         win.clearListBox("Response")
-
         win.clearEntry("clientMsg")
         win.setFocus("clientMsg")
 
         s.sendall(clientMessage)
-
-        #response = s.recv(buffer_size)
-       # win.setLabel("Response", response.decode())
 
 """Login sub-windows to get client name from the user """
 def login_press(btn):
@@ -67,8 +57,9 @@ def login_press(btn):
         win.stop()
     else:
 
-        #clientName = (win.getEntry("clientName") + '#').encode()
         clientName = win.getEntry("clientName").encode()
+       # login_message = ('login' + ">>" + clientName).encode()
+        #s.send(login_message)
         s.send(clientName)
 
         win.hideSubWindow("Login")
@@ -78,90 +69,73 @@ def login_press(btn):
 
 def Main():
 
-    recv_thread = Thread(target=receive_from_server, args=(s,))
-    recv_thread.start()
-
-
-    # Create login windows to get the client name
+    """Create login windows to get the client name"""
     win.startSubWindow("Login", modal=True)
-    win.setSize(300, 150)
-    win.setBg("gray")
-    win.setTransparency(95)
-    win.addLabel("loginLabel", "Enter a your name to start chat:")
-    win.addEntry("clientName")
-    win.addButtons(["Submit", "Cancel"], login_press)
+    win.startLabelFrame("Login Details")
+    win.setSticky("ew")
+    win.setFont(14)
+    #win.setTransparency(95)
+    win.addLabel("loginLabel", "Name", 0, 0)
+    win.addEntry("clientName", 0, 1)
+    win.addButtons(["Submit", "Cancel"], login_press, 2, 0, 2)
+    win.stopLabelFrame()
     win.setFocus("clientName")
     win.stopSubWindow()
 
-    # add labels to show server and client addresses
-    win.addLabel("clientName", "Client Name: ", 0, 0)
-    win.setLabelBg("clientName", "Azure")
-    win.getLabelWidget("clientName").config(font="Verdana 12 overstrike")
-    win.setLabelRelief("clientName", "ridge")
-    win.setLabelAlign("clientName", win.NW)
-
-    win.addEmptyLabel("client", 0, 1, 6)
+    win.startFrame("TOP", row=0, column=0)
+    win.startLabelFrame("Client Name", row=0, column=0)
+    win.setSticky("NEW")
+    win.addEmptyLabel("client", 0, 1)
     win.setLabelBg("client", "Azure")
-    win.getLabelWidget("client").config(font="Verdana 12 overstrike")
-    win.setLabelRelief("client", "ridge")
-    win.setLabelAlign("client", win.NW)
+    win.getLabelWidget("client").config(font="Verdana 14 bold italic overstrike")
+    win.setLabelAlign("client", "center")
+    win.stopLabelFrame()
+    win.stopFrame()
 
-    """
-    # add the respond label - specify row/column/colspan
-    win.addEmptyLabel("Response", 1, 0, 4)
-    win.setLabelRelief("Response", win.GROOVE)
-    win.setLabelAlign("Response", win.NW)
-    win.setLabelHeight("Response", 20)
-    win.setLabel("Response", "Waiting for messages")
-    
-    
-    win.addScrolledTextArea('Response', 1, 0, 4)
-    win.setTextAreaRelief("Response", "sunken")
-    win.setTextArea("Response", "Connected to chat server.", end=True)
-    win.setTextAreaBg('Response', 'Ivory')
-    win.setTextAreaState('Response', 'disabled')
+    win.startFrame("CENTER", row=1, column=0)
 
-    """
-    win.addListBox("onlineClients", [], 1, 0)
+    win.startFrame("LEFT", row=1, column=0)
+    win.addLabel("OnlineClients", "Online Clients", row=1, column=0)
+    win.getLabelWidget("OnlineClients").config(font="Verdana 12 italic overstrike")
+    win.setLabelAlign("OnlineClients", win.SW)
+    win.addListBox("onlineClients", [], 2, 0)
     win.setListBoxMulti("onlineClients", multi=True)
+    win.stopFrame()
 
-    win.addListBox("Response", [], 1, 2)
-    """
+    win.startFrame("MIDDLE", row=2, column=1)
+    win.addLabel("MIDDLE", [], 2, 0)
+    win.stopFrame()
 
+    win.startFrame("RIGHT", row=1, column=2)
+    win.addLabel("Messages", row=1, column=2)
+    win.getLabelWidget("Messages").config(font="Verdana 12 italic overstrike")
+    win.setLabelAlign("Messages", win.SW)
+    win.setSticky("NEW")
+    win.addListBox("Response", [], 2, 2)
+    win.stopFrame()
 
-    # win.registerEvent()
-    # win.addListBox()
-    # win.updateListBox()
-    """
+    win.stopFrame()
 
-    win.addLabel("selectClient", "To client/s:", 2, 0)
-    win.setLabelAlign("selectClient", "left")
-    win.addTickOptionBox("Clients List", [], 2, 1, 4, 2)
+    win.startFrame("BOTTOM", row=2, column=0)
+    win.addLabel("Message", row=2, column=0)
+    win.getLabelWidget("Message").config(font="Verdana 12 italic overstrike")
+    win.setLabelAlign("Message", win.SW)
 
-    win.addLabel("dataFromClient", "Message:", 4, 0)
-    win.setLabelAlign("dataFromClient", "left")
-    win.addEntry("clientMsg", 4, 1)
+    win.addEntry("clientMsg", 3, 0)
+    win.setEntrySticky("clientMsg", "both")
+    win.addButton("Send", press, 3, 3)
+    win.setButtonSticky("Send", "both")
 
-    win.addButton("Send", press, 4, 3, 4)
     win.setFocus("clientMsg")
-
-
+    win.stopFrame()
 
     win.enableEnter(enter_press)
 
-    #win.go()
+    recv_thread = Thread(target=receive_from_server, args=(s,))
+    recv_thread.start()
+
     # Client app starts with the login window as a sub-window
     win.go(startWindow="Login")
-
-    # message = "You are connected to server..."
-    # while True:
-    #     message = input('\nGive a new text or <RETURN> to quit: ')
-    #     if message == '':
-    #         break
-    #     else:
-    #         s.send(message.encode(encoding))
-
-
     recv_thread.join()
 
     # close the connection

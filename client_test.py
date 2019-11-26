@@ -1,9 +1,8 @@
 import unittest
-from client1 import *
-
-
-server_ip = "127.0.0.1"
-server_port = 12345
+import threading
+import socket
+from chat_server_oop import *
+#from client1 import *
 
 #Semaphores to lock the recv and accept methods
 _recv_lock = threading.Condition()
@@ -11,7 +10,51 @@ _send_lock = threading.Condition()
 _accept_lock = threading.Condition()
 
 
-"""--- Client test methods"""
+host = socket.gethostbyname(socket.gethostname())
+port = 12345
+
+class Test_setver(unittest.TestCase):
+
+    def test_login(self):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect((self.host, self.port))
+
+        login_msg = "Login" + ":" + "clientName"
+        conn.sendall(login_msg.encode())
+        rec = conn.recv(1024).decode()
+        conn.close()
+        self.assertEqual(rec, "Login:clientName")
+
+    def test_broadcast(self):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect((self.host, self.port))
+
+        msg = "msg" + ":" + "clientName" + ":" + "all" + ":" + "clientMessage"
+        conn.sendall(msg.encode())
+        rec = conn.recv(1024).decode()
+        conn.close()
+        self.assertEqual(rec, "clientName > clientMessage")
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+"""
+
+    def test_server(self):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect((self.host, self.port))
+        msg = "Hej"
+        conn.send(msg.encode())
+        rec = conn.recv(1024).decode()
+        conn.close()
+        #self.assertEqual(msg, rec[::-1])
+        self.assertEqual(msg, rec)
+
+
+
+
 class ClientTest(unittest.TestCase):
 
     def __init__(self):
@@ -48,4 +91,4 @@ class ClientTest(unittest.TestCase):
         msg = b""
         while True:
             if _send_data:
-
+"""
